@@ -1,0 +1,7 @@
+*.d 
+*.o
+.cache/
+bungos
+image.*
+iso_root/
+limine-binary/
