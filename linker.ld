@@ -1,15 +1,62 @@
-ENTRY(Reset_Handler)
+OUTPUT_FORMAT(elf64-x86-64)
 
-MEMORY 
+ENTRY(kmain)
+
+PHDRS
 {
-    .text :
-    {
-        . = ALIGN(8);
-        *(.isr_vector) /* vector table */ 
-        *(.text) /* code */
-        *(.text*) /* any other code */
-        *(.rodata) /* read only data */
-        . = ALIGN(8);
-        _etext = .;
+    limine_requests PT_LOAD;
+    text PT_LOAD;
+    rodata PT_LOAD;
+    data PT_LOAD;
+}
+
+SECTIONS
+{
+    /* top most 2gb address */
+    . = 0xffffffff80000000;
+
+    /* Define a section to contain the Limine requests and assign it to its own PHDR */
+    .limine_requests : {
+        KEEP(*(.limine_requests_start))
+        KEEP(*(.limine_requests))
+        KEEP(*(.limine_requests_end))
+    }
+
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+
+    .text : {
+        *(.text .text.*)
+    } :text
+
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+
+    .rodata : {
+        *(.rodata .rodata.*)
+    } :rodata
+
+    /* Add a .note.gnu.build-id output section in case a build ID flag is added to the */
+    /* linker command. */
+    .note.gnu.build-id : {
+        *(.note.gnu.build-id)
+    } :rodata
+    
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
+
+    .data : {
+        *(.data .data.*)
+    } :data
+
+    /* NOTE: .bss needs to be the last thing mapped to :data, otherwise lots of */
+    /* unnecessary zeros will be written to the binary. */
+    /* If you need, for example, .init_array and .fini_array, those should be placed */
+    /* above this. */
+    .bss : {
+        *(.bss .bss.*)
+        *(COMMON)
+    } :data
+
+    /DISCARD/ : {
+        *(.eh_frame*)
+        *(.note .note.*)
     }
 }
