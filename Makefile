@@ -6,12 +6,12 @@ WARNINGS 	:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align \
                -Wconversion -Wstrict-prototypes
 CFLAGS 	 	:= -std=gnu23 -g -O2 -pipe $(WARNINGS)
 LDFLAGS 	:= -nostdlib \
-            -nostartfiles \
-            -static \
-            -Wl,-m,elf_x86_64 \
-            -Wl,-z,max-page-size=0x1000 \
-            -Wl,--gc-sections \
-            -Wl,-T,linker.ld
+			   -nostartfiles \
+               -static \
+               -Wl,-m,elf_x86_64 \
+               -Wl,-z,max-page-size=0x1000 \
+               -Wl,--gc-sections \
+               -Wl,-T,linker.ld
 PROJDIRS    := src
 INCLUDEDIR  := include
 SRCFILES 	:= $(shell find $(PROJDIRS) -type f -name "*.c")
@@ -34,8 +34,7 @@ compdb:
 	bear --output compile_commands.json -- $(MAKE) clean all
 
 clean:
-	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES) $(TARGET) compile_commands.json \
-		image.*)
+	-@$(RM) $(wildcard $(OBJFILES) $(DEPFILES) $(TARGET) compile_commands.json image.*)
 
 # download limine deps
 limine:
@@ -82,9 +81,13 @@ iso:
 	mcopy -i image.hdd@@1M limine-binary/BOOTX64.EFI ::/EFI/BOOT
 	mcopy -i image.hdd@@1M limine-binary/BOOTIA32.EFI ::/EFI/BOOT
 
+# rule to facilitate booting into emulator
+qemu:
+	qemu-systema-x86_64 -cdrom image.iso -m 512M
+
 # debugging
 print:
 	@echo SRCFILES=$(SRCFILES)
 	@echo OBJFILES=$(OBJFILES)
 
-.PHONY: all clean print compdb iso
+.PHONY: all clean print compdb iso qemu
