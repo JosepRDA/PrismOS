@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <limine.h>
+#include "rendering.h"
 
 __attribute__((used, section(".limine_requests")))
 static volatile uint64_t limine_base_revision[] = LIMINE_BASE_REVISION(6);
@@ -18,7 +19,7 @@ static volatile uint64_t limine_requests_start_marker[] = LIMINE_REQUESTS_START_
 __attribute__((used, section(".limine_requests_end")))
 static volatile uint64_t limine_requests_end_marker[] = LIMINE_REQUESTS_END_MARKER;
 
-void* memcpy(void* restrict dest, const void* restrict src, size_t n) 
+void* memcpy(void* restrict dest, const void* restrict src, size_t n)
 {
     uint8_t* restrict pdest = dest;
     const uint8_t* restrict psrc = src;
