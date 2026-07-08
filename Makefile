@@ -83,7 +83,7 @@ iso:
 
 # rule to facilitate booting into emulator
 qemu:
-	qemu-systema-x86_64 -cdrom image.iso -m 512M
+	qemu-system-x86_64 -cdrom image.iso -m 512M
 
 # debugging
 print:
