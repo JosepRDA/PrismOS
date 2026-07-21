@@ -1,7 +1,7 @@
 *.d 
 *.o
 .cache/
-bungos
+Prism
 image.*
 iso_root/
 limine-binary/
