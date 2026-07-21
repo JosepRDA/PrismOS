@@ -1,4 +1,4 @@
-TARGET   	:= bungos
+TARGET   	:= Prism
 CC 		 	:= x86_64-elf-gcc
 WARNINGS 	:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align \
                -Wwrite-strings -Wmissing-prototypes -Wmissing-declarations \
@@ -47,7 +47,7 @@ iso:
 	mkdir -p iso_root
 	# Copy the relevant files over.
 	mkdir -p iso_root/boot
-	cp -v bungos iso_root/boot/
+	cp -v Prism iso_root/boot/
 	mkdir -p iso_root/boot/limine
 	cp -v limine.conf limine-binary/limine-bios.sys limine-binary/limine-bios-cd.bin \
 		  limine-binary/limine-uefi-cd.bin iso_root/boot/limine/
@@ -76,14 +76,14 @@ iso:
 	# Make relevant subdirectories.
 	mmd -i image.hdd@@1M ::/EFI ::/EFI/BOOT ::/boot ::/boot/limine
 	# Copy over the relevant files.
-	mcopy -i image.hdd@@1M bungos ::/boot
+	mcopy -i image.hdd@@1M Prism ::/boot
 	mcopy -i image.hdd@@1M limine.conf limine-binary/limine-bios.sys ::/boot/limine
 	mcopy -i image.hdd@@1M limine-binary/BOOTX64.EFI ::/EFI/BOOT
 	mcopy -i image.hdd@@1M limine-binary/BOOTIA32.EFI ::/EFI/BOOT
 
 # rule to facilitate booting into emulator
-qemu:
-	qemu-system-x86_64 -cdrom image.iso -m 512M
+qemu: iso
+	@qemu-system-x86_64 -cdrom image.iso -m 512M
 
 # debugging
 print:
