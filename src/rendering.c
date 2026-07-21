@@ -1,6 +1,6 @@
 #include "rendering.h"
 
-void print_pixel(uint32_t posX, uint32_t posY)
+void print_pixel(uint32_t posX, uint32_t posY, struct color col)
 {
-
+    
 }
