@@ -5,9 +5,9 @@
 #include <stdint.h>
 
 struct color {
-    uint32_t rgb[3];
+    uint8_t rgb[3];
 };
 
-void print_pixel(uint32_t posX, uint32_t posY, struct color col);
+void draw_pixel(struct limine_framebuffer* fb);
 
 #endif
