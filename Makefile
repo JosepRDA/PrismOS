@@ -82,7 +82,7 @@ iso:
 	mcopy -i image.hdd@@1M limine-binary/BOOTIA32.EFI ::/EFI/BOOT
 
 # rule to facilitate booting into emulator
-qemu: iso
+qemu:
 	@qemu-system-x86_64 -cdrom image.iso -m 512M
 
 # debugging

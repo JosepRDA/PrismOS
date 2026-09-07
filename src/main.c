@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <limine.h>
-#include "rendering.h"
+#include "rendering/rendering.h"
 #include "stdlib.h"
 
 __attribute__((used, section(".limine_requests_start")))
@@ -31,17 +31,19 @@ void kmain(void)
         hcf();
     }
 
-    struct limine_framebuffer* framebuffer = framebuffer_request.response->framebuffers[0];
+    struct limine_framebuffer* framebuffer = 
+        framebuffer_request.response->framebuffers[0];
+    Framebuffer_init(framebuffer);
 
     // OS main loop
     while (true) 
     {
-        volatile uint32_t* fb_ptr = framebuffer->address;
         for (size_t y = 0; y < framebuffer->height; y++) {
             for (size_t x = 0; x < framebuffer->width; x++) {
                 uint32_t nX = (uint32_t)x * 255 / framebuffer->width;
                 uint32_t nY = (uint32_t)y * 255 / framebuffer->height;
-                fb_ptr[y * (framebuffer->pitch / 4) + x] = (nY << 8) | nX;
+                // fb_ptr[y * (framebuffer->pitch / 4) + x] = (nY << 8) | nX;
+                putPixel(x, y,  (nY << 8) | nX);
             }
         }
     }
