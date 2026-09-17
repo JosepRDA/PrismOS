@@ -1,5 +1,6 @@
 TARGET   	:= Prism
 CC 		 	:= x86_64-elf-gcc
+ASM			:= fasm
 WARNINGS 	:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align \
                -Wwrite-strings -Wmissing-prototypes -Wmissing-declarations \
                -Wredundant-decls -Wnested-externs -Winline -Wno-long-long \
@@ -13,22 +14,27 @@ LDFLAGS 	:= -nostdlib \
                -Wl,--gc-sections \
                -Wl,-T,linker.ld
 PROJDIRS    := src
-INCLUDEDIR  := include
-SRCFILES 	:= $(shell find $(PROJDIRS) -type f -name "*.c")
+INCLUDEDIR  := include				# exclusive for header files
+CSRCFILES 	:= $(shell find $(PROJDIRS) -type f -name "*.c")
+ASRCFILES 	:= $(shell find $(PROJDIRS) -type f -name "*.asm")
 CFLAGS   	+= -mcmodel=kernel -fno-PIC -fno-lto -ffreestanding \
 			   -ffunction-sections -fdata-sections -mno-red-zone \
 			   -fno-stack-check -fno-stack-protector -MMD -MP -I$(INCLUDEDIR)
-OBJFILES 	:= $(patsubst %.c,%.o,$(SRCFILES))
-DEPFILES 	:= $(patsubst %.c,%.d,$(SRCFILES))
+COBJFILES 	:= $(patsubst %.c,%.o,$(CSRCFILES))
+ASOBJFILES 	:= $(patsubst %.asm,%.o,$(ASRCFILES))
+DEPFILES 	:= $(patsubst %.c,%.d,$(CSRCFILES))
 -include $(DEPFILES)
 
-all: $(OBJFILES)
-	$(CC)  $(CFLAGS) $(LDFLAGS) $(OBJFILES) -o $(TARGET)
+all: $(COBJFILES) $(ASOBJFILES)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(COBJFILES) $(ASOBJFILES) -o $(TARGET)
 
 # rule telling make how to make the object files
 # $< -> c files; $@ -> target (.o)
 %.o: %.c 
 	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.asm
+	$(ASM) $< $@ # $(ASFLAGS)
 
 compdb:
 	bear --output compile_commands.json -- $(MAKE) clean all
