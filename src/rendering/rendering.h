@@ -1,19 +1,16 @@
-#ifndef RENDERING_H
-#define RENDERING_H
+#pragma once
 
 #include <limine.h>
 #include <stddef.h>
 #include <stdint.h>
 
-struct Framebuffer {
+typedef struct {
     void* address;
     size_t width;
     size_t height;
     size_t pitch;
-};
-typedef struct Framebuffer Framebuffer;
+} Framebuffer ;
 
 void Framebuffer_init(struct limine_framebuffer* fb);
 void putPixel(size_t x, size_t y, uint32_t color);
 
-#endif

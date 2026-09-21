@@ -3,7 +3,8 @@
 #include <stddef.h>
 #include <limine.h>
 #include "rendering/rendering.h"
-#include "stdlib.h"
+#include "lib/stdlib.h"
+#include "arch/gdt.h"
 
 __attribute__((used, section(".limine_requests_start")))
 static volatile uint64_t limine_requests_start_marker[] = LIMINE_REQUESTS_START_MARKER;
@@ -31,6 +32,9 @@ void kmain(void)
         hcf();
     }
 
+    x86_64_GDTInitialize();
+
+    // Framebuffer comes last
     struct limine_framebuffer* framebuffer = 
         framebuffer_request.response->framebuffers[0];
     Framebuffer_init(framebuffer);
@@ -40,9 +44,8 @@ void kmain(void)
     {
         for (size_t y = 0; y < framebuffer->height; y++) {
             for (size_t x = 0; x < framebuffer->width; x++) {
-                uint32_t nX = (uint32_t)x * 255 / framebuffer->width;
-                uint32_t nY = (uint32_t)y * 255 / framebuffer->height;
-                // fb_ptr[y * (framebuffer->pitch / 4) + x] = (nY << 8) | nX;
+                uint32_t nX = (uint32_t)(x * 255 / framebuffer->width);
+                uint32_t nY = (uint32_t)(y * 255 / framebuffer->height);
                 putPixel(x, y,  (nY << 8) | nX);
             }
         }

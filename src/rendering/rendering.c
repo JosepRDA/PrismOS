@@ -1,4 +1,4 @@
-#include "rendering/rendering.h"
+#include "rendering.h"
 #include <stdint.h>
 
 static volatile Framebuffer fb = 
