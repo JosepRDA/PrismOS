@@ -22,7 +22,7 @@ GDTDescriptor g_GDTDescriptor = {
 };
 
 // to be implemented in gdt_impl.asm
-void __attribute__((cdecl)) x86_64_GDT_Load(GDTDescriptor* descriptor, uint16_t codeSegment, uint16_t dataSegment);
+extern void x86_64_GDT_Load(GDTDescriptor* descriptor, uint16_t codeSegment, uint16_t dataSegment);
 
 void x86_64_GDTInitialize()
 {
